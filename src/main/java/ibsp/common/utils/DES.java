@@ -1,4 +1,4 @@
-package ibsp.common;
+package ibsp.common.utils;
 
 public final class DES extends Cipher {
 

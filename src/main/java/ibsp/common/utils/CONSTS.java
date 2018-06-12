@@ -1,7 +1,32 @@
-package ibsp.common;
+package ibsp.common.utils;
+
+import java.nio.charset.Charset;
 
 public class CONSTS {
-
+	
+	public enum DataType {
+		STRING, HASH, LIST;
+	}
+	
+	public enum Command {
+		SET, GET, STRLEN, APPEND, DECRBY, DECR, INCR, INCRBY, GETRANGE, GETSET, SETEX, SETNX, SETRANGE,
+		EXISTS, TYPE, DEL, EXPIRE, RENAME, RENAMENX, PERSIST, TTL, PEXPIRE, PTTL,
+		HGET, HSET, HEXISTS, HDEL, HKEYS, HVALS, HGETALL, HMSET, HLEN, HMGET, HSETNX, HINCRBY, HSCAN,
+		LINDEX, LLEN, LPOP, LPUSH, LRANGE, LSET, LREM, LTRIM, RPOP, RPUSH, LINSERT, LPUSHX, RPUSHX,
+		SADD, SCARD, SISMEMBER, SMEMBERS, SREM, 
+		ZADD, ZCARD, ZCOUNT, ZINCRBY, ZRANGE, ZRANGEWITHSCORES, ZRANGEBYSCORE, ZRANGEBYSCOREWITHSCORES, ZREM, ZSCORE, ZREMRANGEBYRANK, ZREMRANGEBYSCORE;
+	}
+	
+	public static final String DEFAULT_LOCK_PRE        = "__GLOABAL__:__LOCK__PRE__:";
+    public static final String REDIS_PROXY_TIMEOUT     = "cache.redis.proxy.timeout";
+	public static final String POOL_SIZE               = "cache.pool.size";
+	public static final String CONNECTION_MODE         = "cache.connection.mode";
+	public static final String CONS_SERVICE_ID         = "cache.service.id";
+	
+	public static final Charset CHARSET                = Charset.forName("UTF-8");
+	public static final int    MAX_REDIS_BODY          = 1024 * 1024 * 1024;
+	public static final String CONF_PATH               = "conf";
+	
 	public static final String INIT_PROP_FILE          = "ibsp";
 	public static final String METASVR_ROOTURL         = "metasvr.rooturl";
 	public static final String DB_SERVICE_ID           = "db.service.id";
@@ -23,10 +48,12 @@ public class CONSTS {
 	
 	public static final String META_SERVICE            = "metasvr";
 	public static final String TIDB_SERVICE            = "tidbsvr";
+	public static final String CACHE_SERVICE           = "cachesvr";
 	
 	public static final String FUN_URL_TEST            = "test";
 	public static final String FUN_GET_ADDRESS         = "getTidbInfoByService";
 	public static final String FUN_PUT_STATISTIC_INFO  = "putClientStatisticInfo";
+	public static final String FUN_GET_PROXY           = "getDeployedProxyByServiceID";
 	
 	public static final String HTTP_PROTOCAL           = "http";
 	public static final String HTTP_METHOD_GET         = "GET";
@@ -40,8 +67,8 @@ public class CONSTS {
 	public static final int REVOKE_NOK                 = -1;
 	
 	public static final String JDBC_HEADER             = "jdbc:mysql://";
-	
-	
+	public static final String TYPE_CACHE_CLIENT       = "CACHE_CLIENT";
+
 	//event listen and dispatch
 	public static final int FIX_HEAD_LEN    = 10;
 	public static final int FIX_PREHEAD_LEN = 6;

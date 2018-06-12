@@ -1,4 +1,4 @@
-package ibsp.common;
+package ibsp.common.utils;
 
 import java.util.Vector;
 import java.util.concurrent.locks.ReentrantLock;
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 
-import ibsp.common.CONSTS;
-import ibsp.common.HttpUtils;
-import ibsp.common.SVarObject;
+import ibsp.common.utils.CONSTS;
+import ibsp.common.utils.HttpUtils;
+import ibsp.common.utils.SVarObject;
 
 
 public class MetasvrUrlConfig {
@@ -29,6 +29,13 @@ public class MetasvrUrlConfig {
 	private Thread checkThread;
 	
 	private ReentrantLock lock;
+	
+	private static MetasvrUrlConfig theInstance = null;
+	private static ReentrantLock intanceLock = null;
+	
+	static {
+		intanceLock = new ReentrantLock();
+	}
 
 	public MetasvrUrlConfig(String metasvrUrl) {
 		valildUrlVec   = new Vector<String>();
@@ -49,6 +56,34 @@ public class MetasvrUrlConfig {
 		if (invalidSize > 0) {
 			startChecker();
 		}
+	}
+	
+	public static MetasvrUrlConfig init(String metasvrUrl) {
+		try {
+			intanceLock.lock();
+			if (theInstance != null) {
+				return theInstance;
+			} else {
+				theInstance = new MetasvrUrlConfig(metasvrUrl);
+			}
+		} finally {
+			intanceLock.unlock();
+		}
+
+		return theInstance;
+	}
+	
+	public static MetasvrUrlConfig get() {
+		try {
+			intanceLock.lock();
+			if (theInstance != null) {
+				return theInstance;
+			}
+		} finally {
+			intanceLock.unlock();
+		}
+
+		return theInstance;
 	}
 	
 	public void close() {
