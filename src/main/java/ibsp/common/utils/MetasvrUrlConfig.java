@@ -6,16 +6,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONObject;
-
-import ibsp.common.utils.CONSTS;
-import ibsp.common.utils.HttpUtils;
-import ibsp.common.utils.SVarObject;
-
-
 public class MetasvrUrlConfig {
 	
 	private static Logger logger = LoggerFactory.getLogger(MetasvrUrlConfig.class);
+	
+	private boolean isAuthed;
+	private String magicKey;
 
 	private Vector<String> valildUrlVec;
 	private Vector<String> invalildUrlVec;
@@ -38,6 +34,10 @@ public class MetasvrUrlConfig {
 	}
 
 	public MetasvrUrlConfig(String metasvrUrl) {
+		//TODO 用户名密码认证还没有做
+		isAuthed     = true;
+		magicKey     = "";
+		
 		valildUrlVec   = new Vector<String>();
 		invalildUrlVec = new Vector<String>();
 		validSize      = 0;
@@ -149,15 +149,9 @@ public class MetasvrUrlConfig {
 			int idx = invalidSize - 1;
 			for (; idx >= 0; idx--) {
 				String url = invalildUrlVec.get(idx);
-				String reqUrl = String.format("%s/%s/%s", url, CONSTS.META_SERVICE, CONSTS.FUN_URL_TEST);
-				
-				SVarObject sVarInvoke = new SVarObject();
-				boolean retInvoke = HttpUtils.getData(reqUrl, sVarInvoke);
-				if (retInvoke) {
-					JSONObject jsonObj = JSONObject.parseObject(sVarInvoke.getVal());
-					if (jsonObj.getIntValue(CONSTS.JSON_HEADER_RET_CODE) == CONSTS.REVOKE_OK) {
-						mergeRecovered(idx);
-					}
+				int retInvoke = BasicOperation.checkUrl(url);
+				if (retInvoke == CONSTS.REVOKE_OK) {
+					mergeRecovered(idx);
 				}
 			}
 			if (invalidSize == 0) { 
@@ -188,6 +182,27 @@ public class MetasvrUrlConfig {
 			checker = null;
 			checkThread = null;
 		}
+	}
+	
+	public void clearAuth() {
+		isAuthed = false;
+		magicKey = "";
+	}
+
+	public boolean isAuthed() {
+		return isAuthed;
+	}
+
+	public void setAuthed(boolean isAuthed) {
+		this.isAuthed = isAuthed;
+	}
+
+	public String getMagicKey() {
+		return magicKey;
+	}
+
+	public void setMagicKey(String magicKey) {
+		this.magicKey = magicKey;
 	}
 
 	private class MetaServerChecker implements Runnable {
