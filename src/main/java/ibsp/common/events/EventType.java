@@ -8,11 +8,23 @@ import ibsp.common.utils.CONSTS;
 
 public enum EventType {
 	
-	e61(50061, false, CONSTS.TYPE_CACHE_CLIENT, "cache proxy deployed"),         // 接入机扩容
-	e62(50062, false, CONSTS.TYPE_CACHE_CLIENT, "cache proxy undeployed"),       // 接入机缩容
+	e0(50010000,   false, CONSTS.TYPE_UNKNOWN, "default"),
+
+	// MQ Event
+	e51(50051, false, CONSTS.TYPE_MQ_CLIENT,    "stop send/publish msg on vbroker"),    // group缩容前要对即将移除的VBROKER停写
+	e52(50052, false, CONSTS.TYPE_MQ_CLIENT,    "add vbroker to group"),                // group扩容
+	e53(50053, false, CONSTS.TYPE_MQ_CLIENT,    "remove vbroker from group"),           // group缩容
+	e54(50054, true,  CONSTS.TYPE_MQ_CLIENT,    "broker down"),                         // broker crashed
+	e55(50055, false, CONSTS.TYPE_MQ_CLIENT,    "broker recovered"),                    // broker service is recovered
+	e56(50056, true,  CONSTS.TYPE_MQ_CLIENT,    "ha cluster swithed"),                  // master-slave have switched 
 	
-	e71(50071, false, CONSTS.TYPE_DB_CLIENT,    "tidb server deployed"),         // TIDB层扩容
-	e72(50072, false, CONSTS.TYPE_DB_CLIENT,    "tidb server undeployed");       // TIDB层缩容
+	// Cache Event
+	e61(50061, false, CONSTS.TYPE_CACHE_CLIENT, "cache proxy deployed"),                 // 接入机扩容
+	e62(50062, false, CONSTS.TYPE_CACHE_CLIENT, "cache proxy undeployed"),               // 接入机缩容
+	
+	// DB Event
+	e71(50071, false, CONSTS.TYPE_DB_CLIENT,    "tidb server deployed"),                 // TIDB层扩容
+	e72(50072, false, CONSTS.TYPE_DB_CLIENT,    "tidb server undeployed");               // TIDB层缩容
 
 	private final int value;
 	private final boolean alarm;

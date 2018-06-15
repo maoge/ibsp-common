@@ -248,6 +248,7 @@ public class CONSTS {
 	
 	public static final String JDBC_HEADER             = "jdbc:mysql://";
 	
+	public static final String TYPE_UNKNOWN            = "UNKNOWN_CLIENT";
 	public static final String TYPE_CACHE_CLIENT       = "CACHE_CLIENT";
 	public static final String TYPE_DB_CLIENT          = "DB_CLIENT";
 	public static final String TYPE_MQ_CLIENT          = "MQ_CLIENT";
