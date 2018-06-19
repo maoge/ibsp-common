@@ -53,7 +53,6 @@ public class CONSTS {
 	
 	public static final String FUN_URL_TEST            = "test";
 	public static final String FUN_GET_ADDRESS         = "getTidbInfoByService";
-	public static final String FUN_PUT_STATISTIC_INFO  = "putClientStatisticInfo";
 	public static final String FUN_GET_PROXY           = "getDeployedProxyByServiceID";
 	public static final String FUN_GETQUEUEBYQNAME     = "getQueueByName";
 	public static final String FUN_GETBORKERSBYQNAME   = "getBrokersByQName";
@@ -262,7 +261,7 @@ public class CONSTS {
 	public static final int BATCH_FIND_CNT             = 1000;
 	public static final int GET_IP_RETRY               = 5;
 	public static final int GET_IP_RETRY_INTERVAL      = 500;
-	public static final int STATISTIC_INTERVAL         = 1000;  // 统计间隔
+	public static final int STATISTIC_INTERVAL         = 2000;  // 统计间隔
 	public static final int REPORT_INTERVAL            = 10000; // 定时上报间隔
 	public static final int EVENT_DISPACH_INTERVAL     = 10;    // 事件派发空闲休眠间隔
 	public static final int RECONNECT_INTERVAL         = 1000;  // 重连间隔

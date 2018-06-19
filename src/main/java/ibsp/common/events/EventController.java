@@ -25,7 +25,7 @@ public class EventController {
 	private String lsnrIP;                          // 本机和管理平台交互的ip
 	private int    lsnrPort;                        // 本机用于接收管理平台下发事件的端口
 	private EventSockListener evSockLsnr;           // 管理平台下发事件接收
-	
+
 	private AtomicInteger eventCntInQueue;
 	private ConcurrentLinkedQueue<JSONObject> eventQueue;
 	
@@ -83,6 +83,21 @@ public class EventController {
 			return;
 		
 		subscribeMap.remove(type);
+	}
+	
+	public String getLsnrIP() {
+		return lsnrIP;
+	}
+
+	public int getLsnrPort() {
+		return lsnrPort;
+	}
+	
+	public String getLsnrAddr() {
+		if (isLsnrInited)
+			return null;
+		
+		return String.format("%s:%d", lsnrIP, lsnrPort);
 	}
 	
 	public void shutdown() {
@@ -188,7 +203,7 @@ public class EventController {
 				logger.error("Event Socket listener start error:{}, port:{} is used, retry another port.", e.getMessage(), lsnrPort);
 				
 				try {
-					Thread.sleep(100);
+					TimeUnit.MILLISECONDS.sleep(100);
 				} catch (InterruptedException e1) {
 				}
 			} finally {
@@ -210,7 +225,7 @@ public class EventController {
 				break;
 			} else {
 				try {
-					Thread.sleep(CONSTS.GET_IP_RETRY_INTERVAL);
+					TimeUnit.MILLISECONDS.sleep(CONSTS.GET_IP_RETRY_INTERVAL);
 				} catch (InterruptedException e) {
 					logger.error(e.getMessage(), e);
 				}
@@ -241,11 +256,13 @@ public class EventController {
 	private class TimerEventRunner implements Runnable {
 		
 		private volatile boolean bRunning;
+		private long lastComputeTS;
 		private long lastReportTS;
 		private long currTS;
 		
 		public TimerEventRunner() {
 			currTS = System.currentTimeMillis();
+			lastComputeTS = currTS;
 			lastReportTS  = currTS;
 		}
 		
@@ -261,6 +278,11 @@ public class EventController {
 					}
 					
 					currTS = System.currentTimeMillis();
+					
+					if ((currTS - lastComputeTS) > CONSTS.STATISTIC_INTERVAL) {
+						doCompute();
+						lastComputeTS = currTS;
+					}
 					
 					if ((currTS - lastReportTS) > CONSTS.REPORT_INTERVAL) {
 						doReport();
@@ -292,10 +314,21 @@ public class EventController {
 			}
 		}
 		
+		private void doCompute() {
+			for (EventSubscriber subscriber : subscribeMap.values()) {
+				subscriber.doCompute();
+			}
+		}
+		
 		private void doReport() {
 			// TODO
 			//String lsnrAddr = String.format("%s:%d", lsnrIP, lsnrPort);
 			//BasicOperation.putClientStatisticInfo("cureuprapapa", lsnrAddr, CONSTS.TYPE_DB_CLIENT);
+			
+			//Set<Entry<String, EventSubscriber>> entry subscribeMap.entrySet();
+			for (EventSubscriber subscriber : subscribeMap.values()) {
+				subscriber.doReport();
+			}
 		}
 		
 	}

@@ -124,11 +124,17 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (!MetasvrUrlConfig.get().isAuthed()) {
+			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
+				return ret;
+			}
+		}
 		
-		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.META_SERVICE, CONSTS.FUN_PUT_STATISTIC_INFO);
+		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.META_SERVICE, CONSTS.FUN_PUT_CLNT_STAT_INFO);
 		String params = String.format("%s=%s&%s=%s&%s=%s", CONSTS.PARAM_CLIENT_TYPE, clientType,
 				CONSTS.PARAM_LSNR_ADDR, lsnrAddr,
-				CONSTS.PARAM_CLIENT_INFO, context);
+				CONSTS.PARAM_CLIENT_INFO, context,
+				CONSTS.PARAM_MAGIC_KEY, MetasvrUrlConfig.get().getMagicKey());
 
 		SVarObject sVarInvoke = new SVarObject();
 		boolean retInvoke = HttpUtils.postData(reqUrl, params, sVarInvoke);
@@ -136,8 +142,58 @@ public class BasicOperation {
 			JSONObject jsonObj = JSONObject.parseObject(sVarInvoke.getVal());
 			ret = jsonObj.getIntValue(CONSTS.JSON_HEADER_RET_CODE);
 			if (ret != CONSTS.REVOKE_OK) {
-				String errInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
-				logger.error("Error sending cache client statistic info...", errInfo);
+				String retInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
+				logger.error("PutClientStatisticInfo error:{}", retInfo);
+				
+				if (ret == CONSTS.REVOKE_AUTH_FAIL) {
+					MetasvrUrlConfig.get().clearAuth();
+					logger.error(CONSTS.ERR_AUTH_FAIL);
+				} else {
+					String errInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
+					logger.error(errInfo);
+				}
+			}
+		} else {
+			logger.error("http request:{} error.", reqUrl);
+			MetasvrUrlConfig.get().putBrokenUrl(rootUrl);
+		}
+
+		return ret;
+	}
+	
+	// FUN_PUT_CLNT_STAT_INFO
+	public static int putClientStatisticInfo(String context, String lsnrAddr) {
+		int ret = CONSTS.REVOKE_NOK;
+
+		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (!MetasvrUrlConfig.get().isAuthed()) {
+			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
+				return ret;
+			}
+		}
+		
+		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.META_SERVICE, CONSTS.FUN_PUT_CLNT_STAT_INFO);
+		String params = String.format("%s=%s&%s=%s&%s=%s&%s=%s", CONSTS.PARAM_CLIENTINFO, context,
+				CONSTS.PARAM_LSNRADDR, lsnrAddr,
+				CONSTS.PARAM_CLIENTTYPE, CONSTS.TYPE_MQ_CLIENT,
+				CONSTS.PARAM_MAGIC_KEY, MetasvrUrlConfig.get().getMagicKey());
+
+		SVarObject sVarInvoke = new SVarObject();
+		boolean retInvoke = HttpUtils.postData(reqUrl, params, sVarInvoke);
+		if (retInvoke) {
+			JSONObject jsonObj = JSONObject.parseObject(sVarInvoke.getVal());
+			ret = jsonObj.getIntValue(CONSTS.JSON_HEADER_RET_CODE);
+			if (ret != CONSTS.REVOKE_OK) {
+				String retInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
+				logger.error("PutClientStatisticInfo error:{}", retInfo);
+				
+				if (ret == CONSTS.REVOKE_AUTH_FAIL) {
+					MetasvrUrlConfig.get().clearAuth();
+					logger.error(CONSTS.ERR_AUTH_FAIL);
+				} else {
+					String errInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
+					logger.error(errInfo);
+				}
 			}
 		} else {
 			logger.error("http request:{} error.", reqUrl);
@@ -517,48 +573,6 @@ public class BasicOperation {
 				String retInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
 				sVar.setVal(retInfo);
 				logger.error(retInfo);
-				
-				if (ret == CONSTS.REVOKE_AUTH_FAIL) {
-					MetasvrUrlConfig.get().clearAuth();
-					logger.error(CONSTS.ERR_AUTH_FAIL);
-				} else {
-					String errInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
-					logger.error(errInfo);
-				}
-			}
-		} else {
-			logger.error("http request:{} error.", reqUrl);
-			MetasvrUrlConfig.get().putBrokenUrl(rootUrl);
-		}
-
-		return ret;
-	}
-
-	// FUN_PUT_CLNT_STAT_INFO
-	public static int putClientStatisticInfo(String context, String lsnrAddr) {
-		int ret = CONSTS.REVOKE_NOK;
-
-		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
-		if (!MetasvrUrlConfig.get().isAuthed()) {
-			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
-				return ret;
-			}
-		}
-		
-		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.META_SERVICE, CONSTS.FUN_PUT_CLNT_STAT_INFO);
-		String params = String.format("%s=%s&%s=%s&%s=%s&%s=%s", CONSTS.PARAM_CLIENTINFO, context,
-				CONSTS.PARAM_LSNRADDR, lsnrAddr,
-				CONSTS.PARAM_CLIENTTYPE, CONSTS.TYPE_MQ_CLIENT,
-				CONSTS.PARAM_MAGIC_KEY, MetasvrUrlConfig.get().getMagicKey());
-
-		SVarObject sVarInvoke = new SVarObject();
-		boolean retInvoke = HttpUtils.postData(reqUrl, params, sVarInvoke);
-		if (retInvoke) {
-			JSONObject jsonObj = JSONObject.parseObject(sVarInvoke.getVal());
-			ret = jsonObj.getIntValue(CONSTS.JSON_HEADER_RET_CODE);
-			if (ret != CONSTS.REVOKE_OK) {
-				String retInfo = jsonObj.getString(CONSTS.JSON_HEADER_RET_INFO);
-				logger.error("PutClientStatisticInfo error:{}", retInfo);
 				
 				if (ret == CONSTS.REVOKE_AUTH_FAIL) {
 					MetasvrUrlConfig.get().clearAuth();
