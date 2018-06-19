@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.ffcs.nio.core.buffer.IoBuffer;
-import com.ffcs.nio.core.core.impl.HandlerAdapter;
+import ibsp.common.nio.core.buffer.IoBuffer;
+import ibsp.common.nio.core.core.impl.HandlerAdapter;
 
 import ibsp.common.utils.CONSTS;
 
-import com.ffcs.nio.core.core.Session;
+import ibsp.common.nio.core.core.Session;
 
 public class EventHandler extends HandlerAdapter {
 	

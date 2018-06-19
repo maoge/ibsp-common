@@ -3,8 +3,8 @@ package ibsp.common.events;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import com.ffcs.nio.core.config.Configuration;
-import com.ffcs.nio.core.nio.TCPController;
+import ibsp.common.nio.core.config.Configuration;
+import ibsp.common.nio.core.nio.TCPController;
 
 public class EventSockListener {
 	
