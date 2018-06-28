@@ -66,6 +66,7 @@ public class CONSTS {
 	public static final String FUN_DELPERMNENTTOPIC    = "delPermnentTopic";
 	public static final String FUN_PURGE_QUEUE         = "purgeQueueByClient";
 	public static final String FUN_URL_AUTH            = "auth";
+	public static final String FUN_URL_NEXT_SEQ_MARGIN = "nextSeqMargin";
 	
 	public static final String PARAM_NAME              = "name";
 	public static final String PARAM_QNAME             = "qname";
@@ -82,6 +83,10 @@ public class CONSTS {
 	public static final String PARAM_CLIENTTYPE        = "CLIENT_TYPE";
 	public static final String PARAM_LSNRADDR          = "LSNR_ADDR";
 	public static final String PARAM_MAGIC_KEY         = "MAGIC_KEY";
+	public static final String PARAM_SEQ_NAME          = "SEQ_NAME";
+	public static final String PARAM_SEQ_STEP          = "SEQ_STEP";
+	public static final String HEADER_START            = "START";
+	public static final String HEADER_END              = "END";
 	
 	public static final String JSON_HEADER_ID          = "ID";
 	public static final String JSON_HEADER_NAME        = "NAME";
@@ -173,6 +178,8 @@ public class CONSTS {
 	public static final long REPLY_TIMEOUT             = 3000L;
 	public static final long SLEEP_WHEN_NODATA         = 50L;
 	public static final int CONSUME_BATCH_SLEEP_CNT    = 800;
+	
+	public static final int SEQ_RETRY_CNT              = 100;
 	
 	public static final int CHANNEL_INVALID            = 0;
 	public static final int CHANNEL_CMD                = 1;

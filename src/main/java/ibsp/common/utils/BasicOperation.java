@@ -1,5 +1,7 @@
 package ibsp.common.utils;
 
+import ibsp.common.utils.LongMarginIDGenerator.LongMargin;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -8,12 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
-
-import ibsp.common.utils.CONSTS;
-import ibsp.common.utils.HttpUtils;
-import ibsp.common.utils.IVarObject;
-import ibsp.common.utils.MetasvrUrlConfig;
-import ibsp.common.utils.SVarObject;
 
 public class BasicOperation {
 
@@ -691,6 +687,38 @@ public class BasicOperation {
 		}
 		
 		return ret;
+	}
+	
+	public static LongMargin nextSeqMargin(String seqName, int step) {
+		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return null;
+		
+		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.META_SERVICE, CONSTS.FUN_URL_NEXT_SEQ_MARGIN);
+		String reqParam = String.format("%s=%s&%s=%d",
+				CONSTS.PARAM_SEQ_NAME, seqName,
+				CONSTS.PARAM_SEQ_STEP, step);
+		
+		SVarObject sVar = new SVarObject();
+		LongMargin margin = null;
+		boolean retPost = HttpUtils.postData(reqUrl, reqParam, sVar);
+		if (retPost) {
+			JSONObject json = JSONObject.parseObject(sVar.getVal());
+			int retCode = json.getInteger(CONSTS.JSON_HEADER_RET_CODE);
+			if (retCode == CONSTS.REVOKE_OK) {
+				long start = json.getLong(CONSTS.HEADER_START);
+				long end   = json.getLong(CONSTS.HEADER_END);
+				margin = new LongMargin(start, end);
+			} else {
+				String errInfo = json.getString(CONSTS.JSON_HEADER_RET_INFO);
+				logger.error("http request error:{}", errInfo);
+			}
+		} else {
+			logger.error("http request:{} error.", reqUrl);
+			MetasvrUrlConfig.get().putBrokenUrl(rootUrl);
+		}
+		
+		return margin;
 	}
 
 }
