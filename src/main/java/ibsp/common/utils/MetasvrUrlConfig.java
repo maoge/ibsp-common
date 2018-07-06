@@ -58,26 +58,14 @@ public class MetasvrUrlConfig {
 		}
 	}
 	
-	public static MetasvrUrlConfig init(String metasvrUrl) {
-		try {
-			intanceLock.lock();
-			if (theInstance != null) {
-				return theInstance;
-			} else {
-				theInstance = new MetasvrUrlConfig(metasvrUrl);
-			}
-		} finally {
-			intanceLock.unlock();
-		}
-
-		return theInstance;
-	}
-	
 	public static MetasvrUrlConfig get() {
 		try {
 			intanceLock.lock();
 			if (theInstance != null) {
 				return theInstance;
+			} else {
+				String metasvrUrl = IBSPConfig.getInstance().getMetasvrUrl();
+				theInstance = new MetasvrUrlConfig(metasvrUrl);
 			}
 		} finally {
 			intanceLock.unlock();
