@@ -33,7 +33,7 @@ public class MetasvrUrlConfig {
 		intanceLock = new ReentrantLock();
 	}
 
-	public MetasvrUrlConfig(String metasvrUrl) {
+	private MetasvrUrlConfig(String metasvrUrl) {
 		//TODO 用户名密码认证还没有做
 		isAuthed     = true;
 		magicKey     = "";
