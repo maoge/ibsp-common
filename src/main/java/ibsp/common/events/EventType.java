@@ -8,7 +8,7 @@ import ibsp.common.utils.CONSTS;
 
 public enum EventType {
 	
-	e0(50010000,   false, CONSTS.TYPE_UNKNOWN, "default"),
+	e0(50000,   false, CONSTS.TYPE_UNKNOWN, "default"),
 
 	// MQ Event
 	e51(50051, false, CONSTS.TYPE_MQ_CLIENT,    "stop send/publish msg on vbroker"),    // group缩容前要对即将移除的VBROKER停写
