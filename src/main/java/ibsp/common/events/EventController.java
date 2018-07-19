@@ -94,7 +94,7 @@ public class EventController {
 	}
 	
 	public String getLsnrAddr() {
-		if (isLsnrInited)
+		if (!isLsnrInited)
 			return null;
 		
 		return String.format("%s:%d", lsnrIP, lsnrPort);
