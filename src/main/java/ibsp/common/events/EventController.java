@@ -263,7 +263,7 @@ public class EventController {
 		public TimerEventRunner() {
 			currTS = System.currentTimeMillis();
 			lastComputeTS = currTS;
-			lastReportTS  = currTS;
+			lastReportTS  = 0L;
 		}
 		
 		@Override
