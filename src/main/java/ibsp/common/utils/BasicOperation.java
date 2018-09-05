@@ -65,6 +65,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.META_SERVICE, CONSTS.FUN_URL_TEST);
 
 		SVarObject sVarInvoke = new SVarObject();
@@ -120,6 +123,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -162,6 +168,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -314,6 +323,9 @@ public class BasicOperation {
 		}
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -369,6 +381,9 @@ public class BasicOperation {
 		}
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -413,6 +428,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -456,6 +474,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -507,6 +528,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -549,6 +573,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -591,6 +618,9 @@ public class BasicOperation {
 		int ret = 0;
 			
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -632,6 +662,9 @@ public class BasicOperation {
 		int ret = CONSTS.REVOKE_NOK;
 		
 		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
 		if (!MetasvrUrlConfig.get().isAuthed()) {
 			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
 				return ret;
@@ -694,10 +727,17 @@ public class BasicOperation {
 		if (StringUtils.isNullOrEmtpy(rootUrl))
 			return null;
 		
+		if (!MetasvrUrlConfig.get().isAuthed()) {
+			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
+				return null;
+			}
+		}
+		
 		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.META_SERVICE, CONSTS.FUN_URL_NEXT_SEQ_MARGIN);
-		String reqParam = String.format("%s=%s&%s=%d",
+		String reqParam = String.format("%s=%s&%s=%d&%s=%s",
 				CONSTS.PARAM_SEQ_NAME, seqName,
-				CONSTS.PARAM_SEQ_STEP, step);
+				CONSTS.PARAM_SEQ_STEP, step,
+				CONSTS.PARAM_MAGIC_KEY, MetasvrUrlConfig.get().getMagicKey());
 		
 		SVarObject sVar = new SVarObject();
 		LongMargin margin = null;
@@ -719,6 +759,48 @@ public class BasicOperation {
 		}
 		
 		return margin;
+	}
+	
+	public static boolean getDeployedProxyByServiceID(String cacheServiceID, SVarObject sVarInvoke) {
+		boolean ret = false;
+		
+		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
+		boolean isAuthed = MetasvrUrlConfig.get().isAuthed();
+		if (!isAuthed) {
+			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
+				return ret;
+			}
+		}
+		
+		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.CACHE_SERVICE, CONSTS.FUN_GET_PROXY);
+		String reqParam = String.format("%s=%s&%s=%s", CONSTS.PARAM_SERVID, cacheServiceID,
+				CONSTS.PARAM_MAGIC_KEY, MetasvrUrlConfig.get().getMagicKey());
+		
+		return HttpUtils.postData(reqUrl, reqParam, sVarInvoke);
+	}
+	
+	public static boolean getTidbInfoByService(String tidbServiceID, SVarObject sVarInvoke) {
+		boolean ret = false;
+		
+		String rootUrl = MetasvrUrlConfig.get().getNextUrl();
+		if (StringUtils.isNullOrEmtpy(rootUrl))
+			return ret;
+		
+		boolean isAuthed = MetasvrUrlConfig.get().isAuthed();
+		if (!isAuthed) {
+			if (!auth(IBSPConfig.getInstance().getMetaSvrUserId(), IBSPConfig.getInstance().getMetaSvrUserPwd())) {
+				return ret;
+			}
+		}
+		
+		String reqUrl = String.format("%s/%s/%s", rootUrl, CONSTS.TIDB_SERVICE, CONSTS.FUN_GET_ADDRESS);
+		String reqParam = String.format("%s=%s&%s=%s", CONSTS.PARAM_SERVID, tidbServiceID,
+				CONSTS.PARAM_MAGIC_KEY, MetasvrUrlConfig.get().getMagicKey());
+		
+		return HttpUtils.postData(reqUrl, reqParam, sVarInvoke);
 	}
 
 }
