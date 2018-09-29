@@ -6,11 +6,16 @@ public class LongMarginIDGenerator {
 		LongMargin longMargin = null;
 		
 		int retry = 0;
-		while (retry < CONSTS.SEQ_RETRY_CNT) {
-			longMargin = BasicOperation.nextSeqMargin(seqName, step);
-			if (longMargin != null)
-				break;
-		}
+        while (retry++ < CONSTS.SEQ_RETRY_CNT) {
+            longMargin = BasicOperation.nextSeqMargin(seqName, step);
+            if (longMargin != null)
+                break;
+
+            try {
+                Thread.sleep(CONSTS.GET_NEXT_MARGIN_INTERVAL);
+            } catch (InterruptedException e) {
+            }
+        }
 		
 		return longMargin;
 	}

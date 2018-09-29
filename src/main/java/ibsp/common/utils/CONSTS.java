@@ -297,4 +297,5 @@ public class CONSTS {
 	public static final String MQ_DEFAULT_PWD          = "ibsp_mq@123321";
 	public static final String MQ_DEFAULT_VHOST        = "/";
 
+	public static final int GET_NEXT_MARGIN_INTERVAL   = 10;
 }
