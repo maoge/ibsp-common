@@ -34,8 +34,7 @@ public class MetasvrUrlConfig {
 	}
 
 	private MetasvrUrlConfig(String metasvrUrl) {
-		//TODO 用户名密码认证还没有做
-		isAuthed     = true;
+		isAuthed     = false;
 		magicKey     = "";
 		
 		valildUrlVec   = new Vector<String>();
