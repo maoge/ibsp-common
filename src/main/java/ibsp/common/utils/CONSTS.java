@@ -30,6 +30,7 @@ public class CONSTS {
 	public static final String INIT_PROP_FILE          = "ibsp";
 	public static final String METASVR_ROOTURL         = "metasvr.rooturl";
 	
+	public static final String SERVICE_ID              = "SERVICE_ID";
 	public static final String DB_SERVICE_ID           = "db.service.id";
 	public static final String DB_DRIVER               = "db.driver";
 	public static final String DB_NAME                 = "db.name";
